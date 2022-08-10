@@ -1,0 +1,26 @@
+version: "3"
+services:
+  backend:
+    build:
+      context: ./
+    image: staff-schedule:latest
+    ports:
+      - "8080:8080"
+    networks:
+      - staff-schedule-net
+    depends_on:
+      - mysqldb
+
+  mysqldb:
+    image: 'mysql:5.7'
+    ports:
+      - "3307:3306"
+    networks:
+      - staff-schedule-net
+    environment:
+      - MYSQL_ROOT_PASSWORD=P@ssw0rd
+      - MYSQL_DATABASE=staff-schedule-db
+      - MYSQL_USER=sa
+      - MYSQL_PASSWORD=P@ssw0rd
+networks:
+  staff-schedule-net:
