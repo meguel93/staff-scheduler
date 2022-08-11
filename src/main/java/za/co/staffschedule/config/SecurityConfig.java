@@ -35,30 +35,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
-    @Bean
-    public DaoAuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userDetailsService);
-        authProvider.setPasswordEncoder(passwordEncoder());
-
-        return authProvider;
-    }
-
     @Override
     protected void configure(@Autowired AuthenticationManagerBuilder auth) throws Exception {
-        auth.authenticationProvider(authenticationProvider());
+        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
-                .antMatchers(HttpMethod.POST, "/v1/staff").hasAnyRole()
-                .antMatchers(HttpMethod.PATCH, "/v1/staff").hasAnyRole("ADMIN")
-                .antMatchers(HttpMethod.DELETE, "/v1/staff").hasAnyRole("ADMIN")
-                .antMatchers(HttpMethod.POST, "v1/schedules").hasAnyRole("ADMIN")
-                .antMatchers(HttpMethod.DELETE, "v1/schedules").hasAnyRole("ADMIN")
-                .antMatchers(HttpMethod.PATCH, "v1/schedules").hasAnyRole("ADMIN")
-                .antMatchers(HttpMethod.GET, "v1/schedules").hasAnyRole();
 
         http.cors().and().csrf()
                 .disable()

@@ -15,8 +15,9 @@ public class Schedule {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
+
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "staff_id")
     private Staff staff;
 
     @Column(name = "work_date")

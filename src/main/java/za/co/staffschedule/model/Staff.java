@@ -5,6 +5,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.List;
 
 @Entity
 @Table(name = "staff")
@@ -37,6 +38,13 @@ public class Staff extends Domain {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Collection<Role> roles;
+
+    @OneToMany(
+            mappedBy = "staff",
+            cascade = CascadeType.ALL
+    )
+    @JoinColumn(name = "staff_id")
+    private List<Schedule> schedules;
 
     public Staff() {
     }

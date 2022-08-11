@@ -95,7 +95,7 @@ public class StaffServiceImpl implements UserDetailsService, StaffService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Staff staff = staffRepository.findByUserName(username);
         Set<GrantedAuthority> grantedAuthorities = staff.getRoles().stream()
-                .map(role -> new SimpleGrantedAuthority(role.getName()))
+                .map(role -> new SimpleGrantedAuthority("ROLE_" + role.getName().toUpperCase()))
                 .collect(Collectors.toCollection(HashSet::new));
         return new org.springframework.security.core.userdetails.User(staff.getUserName(), staff.getPassword(), grantedAuthorities);
     }

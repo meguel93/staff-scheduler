@@ -18,14 +18,14 @@ public class SchedulesControllerV1 extends BaseController {
 
     private final ScheduleService scheduleService;
 
-    @RolesAllowed({"ROLE_ADMIN"})
+    //@RolesAllowed({"ROLE_ADMIN"})
     @PostMapping(consumes = "application/json")
     public ResponseEntity<ScheduleResponse> createSchedule(ScheduleRequest request) throws ScheduleException {
         ScheduleResponse response = scheduleService.createSchedule(request);
         return createdResponse("/", response.getSchedule().getId(), response);
     }
 
-    @RolesAllowed({"ROLE_ADMIN"})
+    //@RolesAllowed({"ROLE_ADMIN"})
     @GetMapping("/{scheduleId}")
     public ResponseEntity<ScheduleResponse> getSchedule(@PathVariable("scheduleId") Long scheduleId) throws ScheduleException {
         ScheduleResponse response = scheduleService.getScheduleById(scheduleId);
@@ -33,14 +33,13 @@ public class SchedulesControllerV1 extends BaseController {
     }
 
 
-    @RolesAllowed({"ROLE_ADMIN"})
+    //@RolesAllowed({"ROLE_ADMIN"})
     @DeleteMapping("/{scheduleId}")
-    public ResponseEntity<ScheduleResponse> deleteSchedule(@PathVariable("scheduleId") Long scheduleId) throws ScheduleException {
-        ScheduleResponse response = scheduleService.deleteSchedule(scheduleId);
-        return okResponse(response);
+    public void deleteSchedule(@PathVariable("scheduleId") Long scheduleId) throws ScheduleException {
+        scheduleService.deleteSchedule(scheduleId);
     }
 
-    @RolesAllowed({"ROLE_ADMIN"})
+    //@RolesAllowed({"ROLE_ADMIN"})
     @GetMapping
     public ResponseEntity<StaffResponse> getSchedules() throws ScheduleException {
         StaffResponse response = scheduleService.getSchedules();

@@ -2,11 +2,12 @@ package za.co.staffschedule.dto;
 
 import lombok.Data;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 
 @Data
 public class ScheduleDTO {
     private Long id;
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
+    private String staff_id;
+    private Date workDate;
+    private int shiftHours;
 }

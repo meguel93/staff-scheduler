@@ -31,7 +31,7 @@ public class AuthControllerV1 extends BaseController {
                             description = "Internal Server Error",
                             content = @Content(schema = @Schema(implementation = ApiErrorResponse.class)))
             })
-    public ResponseEntity<AuthResponse> login(String username, String password) throws AuthException {
+    public ResponseEntity<AuthResponse> login(@RequestBody String username, @RequestBody String password) throws AuthException {
         AuthResponse response = authService.login(username, password);
         return okResponse(response);
     }
