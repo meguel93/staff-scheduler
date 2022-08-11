@@ -43,7 +43,6 @@ public class Staff extends Domain {
             mappedBy = "staff",
             cascade = CascadeType.ALL
     )
-    @JoinColumn(name = "staff_id")
     private List<Schedule> schedules;
 
     public Staff() {
