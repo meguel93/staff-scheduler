@@ -7,7 +7,7 @@ import za.co.staffschedule.request.StaffRequestRequest;
 import za.co.staffschedule.response.StaffResponse;
 
 @Service
-public interface StaffService extends UserDetailsService {
+public interface StaffService {
 
     StaffResponse register(StaffRequestRequest userRegistrationRequest) throws StaffException;
 

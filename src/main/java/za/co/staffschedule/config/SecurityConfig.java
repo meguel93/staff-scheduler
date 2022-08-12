@@ -26,11 +26,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final UserDetailsService userDetailsService;
 
     @Bean
-    public BCryptPasswordEncoder bCryptPasswordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
@@ -40,21 +35,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
     }
 
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        http.authorizeRequests().antMatchers(HttpMethod.POST, "/v1/staff").permitAll()
+                .antMatchers(HttpMethod.GET, "/v1/staff").hasAnyRole("ADMIN")
+                .antMatchers(HttpMethod.PATCH, "/v1/staff").hasAnyRole("ADMIN")
+                .antMatchers(HttpMethod.DELETE, "/v1/staff").hasAnyRole("ADMIN")
+                .antMatchers(HttpMethod.POST, "v1/schedules").hasAnyRole("ADMIN")
+                .antMatchers(HttpMethod.DELETE, "v1/schedules").hasAnyRole("ADMIN")
+                .antMatchers(HttpMethod.PATCH, "v1/schedules").hasAnyRole("ADMIN")
+                .antMatchers(HttpMethod.GET, "v1/schedules").hasAnyRole();
 
-        http.cors().and().csrf()
-                .disable()
-                .authorizeRequests()
-                .and()
-                .httpBasic()
-                .and()
-                .authorizeRequests()
-                .anyRequest()
-                .permitAll()
-                .and()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        //http.cors().and().csrf().disable().authorizeRequests().and().httpBasic().and().authorizeRequests().anyRequest().permitAll().and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
-
 }

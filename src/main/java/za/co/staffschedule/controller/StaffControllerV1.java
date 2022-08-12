@@ -17,35 +17,34 @@ import javax.validation.Valid;
 public class StaffControllerV1 extends BaseController {
     private final StaffService staffService;
 
-    //@RolesAllowed({"ROLE_ADMIN", "ROLE_USER"})
     @PostMapping(consumes = "application/json")
     public ResponseEntity<StaffResponse> register(@RequestBody StaffRequestRequest request) throws StaffException {
         StaffResponse response = staffService.register(request);
         return createdResponse("/", response.getStaff().getId(), response);
     }
 
-    @RolesAllowed({"ROLE_ADMIN"})
+    @RolesAllowed({"ADMIN"})
     @GetMapping("/{userId}")
     public ResponseEntity<StaffResponse> getUserDetails(@PathVariable("userId") Long userId) throws StaffException {
         StaffResponse response = staffService.getUserDetails(userId);
         return okResponse(response);
     }
 
-    @RolesAllowed({"ROLE_ADMIN"})
+    @RolesAllowed({"ADMIN"})
     @GetMapping
     public ResponseEntity<StaffResponse> getUsers() throws StaffException {
         StaffResponse response = staffService.getUsers();
         return okResponse(response);
     }
 
-    @RolesAllowed({"ROLE_ADMIN"})
+    @RolesAllowed({"ADMIN"})
     @PatchMapping
     public ResponseEntity<StaffResponse> updateUser(StaffRequestRequest request) throws StaffException {
         StaffResponse response = staffService.update(request);
         return okResponse(response);
     }
 
-    @RolesAllowed({"ROLE_ADMIN"})
+    @RolesAllowed({"ADMIN"})
     @DeleteMapping("delete/{userId}")
     public void deleteUser(@PathVariable("userId") Long userId) throws StaffException {
         staffService.delete(userId);

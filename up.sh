@@ -7,4 +7,4 @@ mvn clean install
 docker build -t staff-schedule:latest .
 
 # Start containers
-docker-compose up
+docker-compose up -d

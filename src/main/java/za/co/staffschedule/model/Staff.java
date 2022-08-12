@@ -2,6 +2,9 @@ package za.co.staffschedule.model;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.Collection;
@@ -11,13 +14,7 @@ import java.util.List;
 @Table(name = "staff")
 @Getter
 @Setter
-public class Staff extends Domain {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
-
+public class Staff extends Domain  implements UserDetails{
     @Column(name = "username")
     private String userName;
 
@@ -33,46 +30,47 @@ public class Staff extends Domain {
     @Column(name = "email")
     private String email;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinTable(name = "users_roles",
-            joinColumns = @JoinColumn(name = "user_id"),
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "staff_roles",
+            joinColumns = @JoinColumn(name = "staff_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Collection<Role> roles;
+    private List<Role> roles;
 
-    @OneToMany(
-            mappedBy = "staff",
-            cascade = CascadeType.ALL
+    @ManyToMany(
+            fetch = FetchType.LAZY
     )
+    @JoinTable(name = "staff_schedules",
+            joinColumns = @JoinColumn(name = "staff_id"),
+            inverseJoinColumns = @JoinColumn(name = "schedule_id"))
     private List<Schedule> schedules;
 
-    public Staff() {
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return this.roles;
     }
 
-    public Staff(String userName, String password, String firstName, String lastName, String email) {
-        this.userName = userName;
-        this.password = password;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
+    @Override
+    public String getUsername() {
+        return this.userName;
     }
 
-    public Staff(String userName, String password, String firstName, String lastName, String email,
-                 Collection<Role> roles) {
-        this.userName = userName;
-        this.password = password;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.roles = roles;
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
     }
 
-    public Staff(Long id, String userName, String password, String firstName, String lastName, String email, Collection<Role> roles) {
-        this.id = id;
-        this.userName = userName;
-        this.password = password;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.roles = roles;
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 }

@@ -31,25 +31,34 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class StaffServiceImpl implements UserDetailsService, StaffService {
+public class StaffServiceImpl implements StaffService {
     private final StaffRepository staffRepository;
     private final RoleRepository roleRepository;
 
     private final StaffMapper staffMapper;
+    private final PasswordEncoder encoder;
 
     @Override
     public StaffResponse register(StaffRequestRequest request) throws StaffException {
         StaffDTO userDetails = request.getStaffDetails();
         validateUser(userDetails);
         Staff newStaff = staffMapper.convertToDTO(userDetails);
-
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         newStaff.setPassword(encoder.encode(newStaff.getPassword())); //Encode password
 
         addUserRolesIfPossible(userDetails, newStaff);
-        newStaff = staffRepository.save(newStaff);
+        newStaff = save(newStaff);
         log.info(String.format("User has been created successfully %s", newStaff.getId()));
         return getUserResponse(newStaff);
+    }
+
+    private Staff save(Staff newStaff) throws StaffException {
+        try {
+            return staffRepository.save(newStaff);
+        }catch (Exception exception){
+            String message = String.format("Unexpected error occurred while saving a stuff %s", newStaff.getEmail());
+            log.error(message,exception);
+            throw new StaffException(message, exception);
+        }
     }
 
     private void addUserRolesIfPossible(StaffDTO userDetails, Staff newStaff) {
@@ -68,7 +77,7 @@ public class StaffServiceImpl implements UserDetailsService, StaffService {
         StaffDTO userDetails = request.getStaffDetails();
         fetchUserById(userDetails.getId());
         Staff updated = staffMapper.convertToDTO(userDetails);
-        updated = staffRepository.save(updated);
+        updated = save(updated);
         return getUserResponse(updated);
     }
 
@@ -91,14 +100,7 @@ public class StaffServiceImpl implements UserDetailsService, StaffService {
         return new StaffResponse(convertedUsers);
     }
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Staff staff = staffRepository.findByUserName(username);
-        Set<GrantedAuthority> grantedAuthorities = staff.getRoles().stream()
-                .map(role -> new SimpleGrantedAuthority("ROLE_" + role.getName().toUpperCase()))
-                .collect(Collectors.toCollection(HashSet::new));
-        return new org.springframework.security.core.userdetails.User(staff.getUserName(), staff.getPassword(), grantedAuthorities);
-    }
+
 
     private Staff fetchUserById(Long id) {
         Optional<Staff> userOptional = staffRepository.findById(id);

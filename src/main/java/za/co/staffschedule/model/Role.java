@@ -2,6 +2,7 @@ package za.co.staffschedule.model;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
 
@@ -9,16 +10,12 @@ import javax.persistence.*;
 @Table(name = "role")
 @Getter
 @Setter
-public class Role extends Domain {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
-
+public class Role extends Domain  implements GrantedAuthority {
     @Column(name = "name")
     private String name;
 
-    public Role() {
+    @Override
+    public String getAuthority() {
+        return this.name;
     }
 }
